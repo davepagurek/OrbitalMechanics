@@ -21,7 +21,8 @@
 			y = _y;
 			
 			this.graphics.beginFill(0x000000, 1);
-			this.graphics.drawCircle(0, 0, 3);
+			this.graphics.drawCircle(0, 0, 2+mass/3);
+			this.graphics.endFill();
 		}
 
 	}

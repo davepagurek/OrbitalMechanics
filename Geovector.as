@@ -12,26 +12,32 @@
 			angle = _angle;
 		}
 		
-		public function setComponents(_x:Number, _y:Number):void {
-			magnitude = Math.sqrt(Math.pow(_x, 2) + Math.pow(_y, 2));
+		public static function atan(_x:Number, _y:Number):Number {
+			var _angle:Number=0;
 			if (_x==0) {
 				if (_y>0) {
-					angle = Math.PI/2;
+					_angle = Math.PI/2;
 				} else {
-					angle = 3*Math.PI/2;
+					_angle = 3*Math.PI/2;
 				}
 			} else if (_y==0) {
 				if (_x>0) {
-					angle = 0;
+					_angle = 0;
 				} else {
-					angle = Math.PI;
+					_angle = Math.PI;
 				}
 			} else {
-				angle = Math.atan(_y/_x);
+				_angle = Math.atan(_y/_x);
 				if (_x<0) {
-					angle += Math.PI;
+					_angle += Math.PI;
 				}
 			}
+			return _angle;
+		}
+		
+		public function setComponents(_x:Number, _y:Number):void {
+			magnitude = Math.sqrt(Math.pow(_x, 2) + Math.pow(_y, 2));
+			angle = Geovector.atan(_x, _y);
 		}
 		
 		public function x():Number {
