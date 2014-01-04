@@ -3,7 +3,10 @@
 	import flash.display.MovieClip;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-	
+	import flash.display.StageScaleMode;
+	import flash.display.StageAlign;
+	import flash.net.URLRequest;
+	import flash.net.navigateToURL;
 	
 	public class OrbitalMechanicsDemo extends MovieClip {
 		
@@ -13,17 +16,47 @@
 		public var _mass:Number = 1;
 		public var _angle:Number = 0;
 		public var _magnitude:Number = 0;
+		public var menu:Menu = new Menu();
 		
 		public function OrbitalMechanicsDemo() {
+			stage.scaleMode = StageScaleMode.NO_SCALE; 
+			stage.align = StageAlign.TOP_LEFT; 
+			
 			addChild(system);
 			system.x = stage.stageWidth/2;
 			system.y = stage.stageHeight/2;
 			
-			system.addBody(new Body(0, -200, 11, new Geovector(2, Math.PI)));
-			system.addBody(new Body(0, 0, 15));
-			system.addBody(new Body(0, 50, 3, new Geovector(6, 0)));
+			system.addBody(new Body(0, -200, 14, new Geovector(2, 0)));
+			system.addBody(new Body(0, 0, 15, new Geovector(3, Math.PI)));
+			system.addBody(new Body(0, 50, 3, new Geovector(3, 0)));
+			
+			system.trails = true;
+			
+			addChild(menu);
+			menu.x=15;
+			menu.y=stage.stageHeight - 15;
+			menu.github.addEventListener(MouseEvent.CLICK, openGitHub);
+			menu.reset.addEventListener(MouseEvent.CLICK, clearBodies);
 
 			stage.addEventListener(MouseEvent.CLICK, setLocation);
+			stage.addEventListener(Event.RESIZE, resizeStage);
+		}
+		
+		public function openGitHub(e:MouseEvent):void {
+			navigateToURL(new URLRequest("https://github.com/pahgawk/OrbitalMechanics"), "_blank");
+		}
+		
+		public function clearBodies(e:MouseEvent):void {
+			while (system.bodies.length>0) {
+				system.removeBody(system.bodies[0]);
+			}
+		}
+		
+		public function resizeStage(e:Event):void {
+			menu.x=15;
+			menu.y=stage.stageHeight - 15;
+			system.x = stage.stageWidth/2;
+			system.y = stage.stageHeight/2;
 		}
 		
 		public function setLocation(e:MouseEvent):void {
@@ -42,7 +75,7 @@
 			_mass = Math.sqrt(Math.pow(e.stageX-_x, 2) + Math.pow(e.stageY-_y, 2))/2;
 			
 			graphics.clear();
-			this.graphics.beginFill(0x000000, 0.5);
+			this.graphics.beginFill(0xFFFFFF, 0.5);
 			this.graphics.drawCircle(_x, _y, 2+_mass/3);
 			this.graphics.endFill();
 		}
@@ -62,11 +95,11 @@
 			_angle = Geovector.atan(e.stageX-_x, e.stageY-_y);
 			
 			graphics.clear();
-			this.graphics.beginFill(0x000000, 0.2);
+			this.graphics.beginFill(0xFFFFFF, 0.2);
 			this.graphics.drawCircle(_x, _y, 2+_mass/3);
 			this.graphics.endFill();
 			
-			this.graphics.lineStyle(1, 0x000000, 1);
+			this.graphics.lineStyle(1, 0xFFFFFF, 1);
 			this.graphics.moveTo(_x, _y);
 			this.graphics.lineTo(e.stageX, e.stageY);
 		}
