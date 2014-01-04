@@ -19,14 +19,10 @@
 			system.x = stage.stageWidth/2;
 			system.y = stage.stageHeight/2;
 			
-			system.addBody(new Body(0, -300, 10, new Geovector(10, Math.PI)));
-			system.addBody(new Body(0, 300, 10, new Geovector(12, 0)));
-			system.addBody(new Body(0, 0, 10));
-			/*system.addBody(new Body(-300, -300, 20, new Geovector(20, Math.PI/2)));
-			system.addBody(new Body(-300, 300, 20, new Geovector(20, 0)));
-			system.addBody(new Body(300, -300, 20, new Geovector(20, Math.PI)));
-			system.addBody(new Body(300, 300, 20, new Geovector(20, 3*Math.PI/2)));*/
-			
+			system.addBody(new Body(0, -200, 11, new Geovector(2, Math.PI)));
+			system.addBody(new Body(0, 0, 15));
+			system.addBody(new Body(0, 50, 3, new Geovector(6, 0)));
+
 			stage.addEventListener(MouseEvent.CLICK, setLocation);
 		}
 		
@@ -57,10 +53,12 @@
 			
 			stage.addEventListener(MouseEvent.MOUSE_MOVE, drawVelocity);
 			stage.addEventListener(MouseEvent.CLICK, setVelocity);
+			
+			drawVelocity(e);
 		}
 		
 		public function drawVelocity(e:MouseEvent):void {
-			_magnitude = Math.sqrt(Math.pow(e.stageX-_x, 2) + Math.pow(e.stageY-_y, 2))/4;
+			_magnitude = Math.sqrt(Math.pow(e.stageX-_x, 2) + Math.pow(e.stageY-_y, 2))/20;
 			_angle = Geovector.atan(e.stageX-_x, e.stageY-_y);
 			
 			graphics.clear();

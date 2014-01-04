@@ -8,6 +8,7 @@
 		
 		public var velocity:Geovector = new Geovector(0, 0);
 		public var mass:Number = 1;
+		public var radius:Number = 1;
 		
 		public static const blank:Geovector = new Geovector(0, 0);
 
@@ -19,9 +20,10 @@
 			}
 			x = _x;
 			y = _y;
+			radius = 2+mass/3;
 			
 			this.graphics.beginFill(0x000000, 1);
-			this.graphics.drawCircle(0, 0, 2+mass/3);
+			this.graphics.drawCircle(0, 0, radius);
 			this.graphics.endFill();
 		}
 
