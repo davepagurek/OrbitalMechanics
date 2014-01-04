@@ -7,7 +7,7 @@
 	public class OrbitalMechanics extends MovieClip {
 		
 		private var bodies:Vector.<Body> = new Vector.<Body>();
-		public const G:Number = 50;
+		public const G:Number = 100;
 		
 		private var paused:Boolean = false;
 		
@@ -55,12 +55,16 @@
 			for (var i:int=0; i<bodies.length; i++) {
 				for (var j:int=i+1; j<bodies.length; j++) {
 					//Check for collisions
-					if (Math.sqrt(Math.pow(bodies[i].x-bodies[j].x,2) + Math.pow(bodies[i].y-bodies[j].y,2))<=(bodies[i].mass+bodies[j].mass)/3) {
+					if (Math.sqrt(Math.pow(bodies[i].x-bodies[j].x,2) + Math.pow(bodies[i].y-bodies[j].y,2))<=bodies[i].radius+bodies[j].radius) {
+						
+						//Find resultant vector assuming perfectly inelastic collisions
 						var _x = (bodies[i].mass*bodies[i].velocity.x() + bodies[j].mass*bodies[j].velocity.x())/(bodies[i].mass + bodies[j].mass);
 						var _y = (bodies[i].mass*bodies[i].velocity.y() + bodies[j].mass*bodies[j].velocity.y())/(bodies[i].mass + bodies[j].mass);
 						var _angle = Geovector.atan(_x, _y);
 						var _velocity:Geovector = new Geovector(Math.sqrt(Math.pow(_x,2)+Math.pow(_y,2)), _angle);
-						var b:Body = new Body((bodies[i].x-bodies[i].mass/3+bodies[j].x+bodies[j].mass/3)/2, (bodies[i].y-bodies[i].mass/3+bodies[j].y+bodies[j].mass/3)/2, bodies[i].mass+bodies[j].mass, _velocity);
+						
+						//Create new body
+						var b:Body = new Body((bodies[i].x+bodies[j].x)/2, (bodies[i].y+bodies[j].y)/2, bodies[i].mass+bodies[j].mass, _velocity);
 						var bi:Body = bodies[i];
 						var bj:Body = bodies[j];
 						removeBody(bi);
@@ -81,14 +85,14 @@
 							anglej-=Math.PI;
 						}
 						
-						bodies[i].velocity.add(new Geovector(force, anglei));
-						bodies[j].velocity.add(new Geovector(force, anglej));
+						bodies[i].velocity.add(new Geovector(force/bodies[i].mass, anglei));
+						bodies[j].velocity.add(new Geovector(force/bodies[j].mass, anglej));
 					}
 				}
 				
 				//Update position
-				bodies[i].x+=bodies[i].velocity.x()/bodies[i].mass;
-				bodies[i].y+=bodies[i].velocity.y()/bodies[i].mass;
+				bodies[i].x+=bodies[i].velocity.x();
+				bodies[i].y+=bodies[i].velocity.y();
 			}
 		}
 	}
