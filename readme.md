@@ -1,5 +1,5 @@
 <h1>OrbitalMechanics</h1>
-An Actionscript 3 planetary physics simulator
+An Actionscript 3 planetary physics simulator. A live demo is available at http://www.pahgawks.com/orbit/
 
 <h2>Features</h2>
 <ul>
