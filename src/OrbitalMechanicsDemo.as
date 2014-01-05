@@ -12,6 +12,9 @@ package
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
 	import flash.events.KeyboardEvent;
+	import flash.text.TextField;
+	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFormat;
 	import flash.ui.Keyboard;
 	import flash.geom.Rectangle;
 	
@@ -25,6 +28,8 @@ package
 		public var _magnitude:Number = 0;
 		public var menu:Menu = new Menu();
 		public var warning:Warning = new Warning();
+		public var scale:TextField = new TextField();
+		public var format:TextFormat = new TextFormat();
 		
 		public function OrbitalMechanicsDemo() {
 			stage.scaleMode = StageScaleMode.NO_SCALE; 
@@ -48,7 +53,16 @@ package
 			
 			addChild(warning);
 			warning.x=stage.stageWidth/2;
-			warning.y=stage.stageHeight+50;
+			warning.y = stage.stageHeight + 50;
+			
+			addChild(scale);
+			scale.autoSize = TextFieldAutoSize.RIGHT;
+			scale.x = stage.stageWidth - 15;
+			scale.textColor = 0xFFFFFF;
+			scale.text = "Scale: 100%";
+			format.font = "_sans";
+			scale.setTextFormat(format);
+			scale.y = stage.stageHeight - 15 - scale.height;
 
 			stage.addEventListener(MouseEvent.CLICK, setLocation);
 			stage.addEventListener(Event.RESIZE, resizeStage);
@@ -57,10 +71,37 @@ package
 		
 		public function centerStage(e:Event):void {
 			if (!system.paused) {
-				var rect:Rectangle = system.getRect(system);
-				system.x += (stage.stageWidth/2 - rect.x-rect.width/2 - system.x)/12;
-				system.y += (stage.stageHeight/2 - rect.y-rect.height/2 - system.y)/12;
-				warning.y += (stage.stageHeight+50 - warning.y)/12;
+				var _w:Number = system.width;
+				var _h:Number = system.height;
+				var size:Number = 1;
+				if (stage.stageWidth > stage.stageHeight) {
+					size = stage.stageHeight;
+				} else {
+					size = stage.stageWidth;
+				}
+				
+				if (system.bodies.length > 1) {
+					if (_w > _h) {
+						system.width += (size*0.5 - system.width) / 12;
+						system.height = system.width * (_h / _w);
+					} else {
+						system.height += (size*0.5 - system.height) / 12;
+						system.width = system.height * (_w / _h);
+					}
+				} else {
+					system.scaleX += (1 - system.scaleX)/4;
+					system.scaleY = system.scaleX;
+				}
+				
+				var rect:Rectangle = system.getBounds(system);
+				system.x += (stage.stageWidth/2 - (rect.x+rect.width/2)*system.scaleX - system.x) / 12;
+				system.y += (stage.stageHeight/2 - (rect.y+rect.height/2)*system.scaleY - system.y) / 12;
+				
+				warning.y += (stage.stageHeight + 50 - warning.y) / 12;
+				
+				
+				scale.text = "Scale: " + Math.round(system.scaleX * 100) + "%";
+				scale.setTextFormat(format);
 			} else {
 				warning.y += (stage.stageHeight-15 - warning.y)/12;
 			}
@@ -80,7 +121,12 @@ package
 			menu.x=15;
 			menu.y=stage.stageHeight - 15;
 			warning.x=stage.stageWidth/2;
-			warning.y=stage.stageHeight+50;
+			warning.y = stage.stageHeight + 50;
+			scale.text = "";
+			scale.x = stage.stageWidth - 15;
+			scale.text = "Scale: " + Math.round(system.scaleX * 100) + "%";
+			scale.setTextFormat(format);
+			scale.y = stage.stageHeight - 15 - scale.height;
 		}
 		
 		public function setLocation(e:MouseEvent):void {
@@ -103,7 +149,7 @@ package
 			
 			graphics.clear();
 			this.graphics.beginFill(0xFFFFFF, 0.5);
-			this.graphics.drawCircle(_x, _y, 2+_mass/3);
+			this.graphics.drawCircle(_x, _y, (2+_mass/3)*system.scaleX);
 			this.graphics.endFill();
 		}
 		
@@ -123,7 +169,7 @@ package
 			
 			graphics.clear();
 			this.graphics.beginFill(0xFFFFFF, 0.2);
-			this.graphics.drawCircle(_x, _y, 2+_mass/3);
+			this.graphics.drawCircle(_x, _y, (2+_mass/3)*system.scaleX);
 			this.graphics.endFill();
 			
 			this.graphics.lineStyle(1, 0xFFFFFF, 1);
@@ -133,7 +179,7 @@ package
 		
 		public function setVelocity(e:MouseEvent):void {
 			graphics.clear();
-			system.addBody(new Body(-system.x+_x, -system.y+_y, _mass, new Geovector(_magnitude, _angle)));
+			system.addBody(new Body((-system.x+_x)*(1/system.scaleX), (-system.y+_y)*(1/system.scaleY), _mass, new Geovector(_magnitude, _angle)));
 			system.resume();
 			
 			stage.removeEventListener(MouseEvent.MOUSE_MOVE, drawVelocity);

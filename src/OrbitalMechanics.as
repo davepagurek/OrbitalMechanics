@@ -7,6 +7,7 @@ package
 	import flash.display.MovieClip;
 	import flash.events.Event;
 	import flash.geom.Point;
+	import flash.display.LineScaleMode;
 	
 	public class OrbitalMechanics extends MovieClip {
 		
@@ -116,8 +117,8 @@ package
 					bodies[i].addHistory(new Point(bodies[i].x, bodies[i].y));
 					
 					for (var k:int=0; k<bodies[i].history.length-1; k++) {
-						this.graphics.lineStyle(1, bodies[i].color, 1-k*(1/(bodies[i].history.length-1)));
-						this.graphics.moveTo(bodies[i].history[k].x, bodies[i].history[k].y);
+						this.graphics.lineStyle(1, bodies[i].color, 1-k*(1/(bodies[i].history.length-1)), false, LineScaleMode.NONE);
+						if (k==0) this.graphics.moveTo(bodies[i].history[k].x, bodies[i].history[k].y);
 						this.graphics.lineTo(bodies[i].history[k+1].x, bodies[i].history[k+1].y);
 					}
 				}
@@ -127,8 +128,8 @@ package
 			if (trails) {
 				for (i=0; i<temp.length; i++) {
 					for (k=0; k<temp[i].history.length-1; k++) {
-						this.graphics.lineStyle(1, temp[i].color, 1-k*(1/(temp[i].history.length-1)));
-						this.graphics.moveTo(temp[i].history[k].x, temp[i].history[k].y);
+						this.graphics.lineStyle(1, temp[i].color, 1-k*(1/(temp[i].history.length-1)), false, LineScaleMode.NONE);
+						if (k==0) this.graphics.moveTo(temp[i].history[k].x, temp[i].history[k].y);
 						this.graphics.lineTo(temp[i].history[k+1].x, temp[i].history[k+1].y);
 					}
 					
