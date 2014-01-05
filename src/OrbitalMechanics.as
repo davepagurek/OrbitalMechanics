@@ -1,5 +1,9 @@
-﻿package  {
-	
+package 
+{
+	/**
+	 * ...
+	 * @author Dave Pagurek
+	 */
 	import flash.display.MovieClip;
 	import flash.events.Event;
 	import flash.geom.Point;
@@ -64,9 +68,9 @@
 					if (Math.sqrt(Math.pow(bodies[i].x-bodies[j].x,2) + Math.pow(bodies[i].y-bodies[j].y,2))<=bodies[i].radius+bodies[j].radius) {
 						
 						//Find resultant vector assuming perfectly inelastic collisions
-						var _x = (bodies[i].mass*bodies[i].velocity.x() + bodies[j].mass*bodies[j].velocity.x())/(bodies[i].mass + bodies[j].mass);
-						var _y = (bodies[i].mass*bodies[i].velocity.y() + bodies[j].mass*bodies[j].velocity.y())/(bodies[i].mass + bodies[j].mass);
-						var _angle = Geovector.atan(_x, _y);
+						var _x:Number = (bodies[i].mass*bodies[i].velocity.x() + bodies[j].mass*bodies[j].velocity.x())/(bodies[i].mass + bodies[j].mass);
+						var _y:Number = (bodies[i].mass*bodies[i].velocity.y() + bodies[j].mass*bodies[j].velocity.y())/(bodies[i].mass + bodies[j].mass);
+						var _angle:Number = Geovector.atan(_x, _y);
 						var _velocity:Geovector = new Geovector(Math.sqrt(Math.pow(_x,2)+Math.pow(_y,2)), _angle);
 						
 						//Create new body
@@ -141,5 +145,4 @@
 			}
 		}
 	}
-	
 }

@@ -1,5 +1,9 @@
-﻿package  {
-	
+package 
+{
+	/**
+	 * ...
+	 * @author Dave Pagurek
+	 */
 	import flash.display.MovieClip;
 	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;
@@ -63,5 +67,5 @@
 		}
 
 	}
-	
+
 }

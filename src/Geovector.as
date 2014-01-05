@@ -1,5 +1,9 @@
-﻿package  {
-	
+package 
+{
+	/**
+	 * ...
+	 * @author Dave Pagurek
+	 */
 	public class Geovector {
 		
 		public var magnitude:Number = 0;
@@ -49,19 +53,19 @@
 		}
 		
 		public function add(v:Geovector):Geovector {
-			var _x = x()+v.x();
-			var _y = y()+v.y();
+			var _x:Number = x()+v.x();
+			var _y:Number = y()+v.y();
 			setComponents(_x, _y);
 			return this;
 		}
 		
 		public function subtract(v:Geovector):Geovector {
-			var _x = x()-v.x();
-			var _y = y()-v.y();
+			var _x:Number = x()-v.x();
+			var _y:Number = y()-v.y();
 			setComponents(_x, _y);
 			return this;
 		}
 
 	}
-	
+
 }
