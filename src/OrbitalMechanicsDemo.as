@@ -179,7 +179,7 @@ package
 		
 		public function setVelocity(e:MouseEvent):void {
 			graphics.clear();
-			system.addBody(new Body((-system.x+_x)*(1/system.scaleX), (-system.y+_y)*(1/system.scaleY), _mass, new Geovector(_magnitude, _angle)));
+			system.addBody(new Body((-system.x+_x)*(1/system.scaleX), (-system.y+_y)*(1/system.scaleY), _mass, new Geovector(_magnitude*(1/system.scaleX), _angle)));
 			system.resume();
 			
 			stage.removeEventListener(MouseEvent.MOUSE_MOVE, drawVelocity);
