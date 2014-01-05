@@ -67,7 +67,11 @@
 						var _x = (bodies[i].mass*bodies[i].velocity.x() + bodies[j].mass*bodies[j].velocity.x())/(bodies[i].mass + bodies[j].mass);
 						var _y = (bodies[i].mass*bodies[i].velocity.y() + bodies[j].mass*bodies[j].velocity.y())/(bodies[i].mass + bodies[j].mass);
 						var _angle = Geovector.atan(_x, _y);
-						var _velocity:Geovector = new Geovector(Math.sqrt(Math.pow(_x,2)+Math.pow(_y,2)), _angle);
+						var rect:Rectangle = system.getRect(system);
+						var _velocity:Geovector = new Geovector(Math.sqrt(
+							Math.pow(_x + stage.stageWidth/2 - rect.x-rect.width/2 - system.x,2)+
+							Math.pow(_y + stage.stageHeight/2 - rect.y-rect.height/2 - system.y,2)),
+							_angle);
 						
 						//Create new body
 						var b:Body = new Body((bodies[i].x+bodies[j].x)/2, (bodies[i].y+bodies[j].y)/2, bodies[i].mass+bodies[j].mass, _velocity);
