@@ -64,8 +64,9 @@ package
 		public function calculate(e:Event):void {
 			graphics.clear();
 			for (var i:int=0; i<bodies.length; i++) {
-				for (var j:int=i+1; j<bodies.length; j++) {
-					//Check for collisions
+				for (var j:int = i + 1; j < bodies.length; j++) {
+					
+					//If two bodies have collided
 					if (Math.sqrt(Math.pow(bodies[i].x-bodies[j].x,2) + Math.pow(bodies[i].y-bodies[j].y,2))<=bodies[i].radius+bodies[j].radius) {
 						
 						//Find resultant vector assuming perfectly inelastic collisions
@@ -89,7 +90,9 @@ package
 						
 						addBody(b);
 						if (i!=0) i--;
-						if (j!=0) j--;
+						if (j != 0) j--;
+						
+					//Otherwise, calculate forces and update vectors
 					} else {
 						//Update vectors
 						var force:Number = (G*bodies[i].mass*bodies[j].mass)/Math.abs(Math.pow(bodies[j].x-bodies[i].x,2) + Math.pow(bodies[j].y-bodies[i].y,2));
@@ -133,7 +136,10 @@ package
 						this.graphics.lineTo(temp[i].history[k+1].x, temp[i].history[k+1].y);
 					}
 					
+					//Remove pieces of the trails
 					temp[i].history.pop();
+					
+					//Remove body completely if the trail is removed completely
 					if (temp[i].history.length==0) {
 						temp.splice(i, 1);
 						i--;
