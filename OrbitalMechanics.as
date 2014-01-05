@@ -10,24 +10,28 @@
 		public const G:Number = 100;
 		public var trails:Boolean = false;
 		private var temp:Vector.<Body> = new Vector.<Body>();
-		private var paused:Boolean = false;
+		private var _paused:Boolean = false;
 		
 		public function OrbitalMechanics() {
 			addEventListener(Event.ENTER_FRAME, calculate);
 		}
 		
 		public function pause():void {
-			if (!paused) {
+			if (!_paused) {
 				removeEventListener(Event.ENTER_FRAME, calculate);
-				paused=true;
+				_paused=true;
 			}
 		}
 		
 		public function resume():void {
-			if (paused) {
+			if (_paused) {
 				addEventListener(Event.ENTER_FRAME, calculate);
-				paused=false;
+				_paused=false;
 			}
+		}
+		
+		public function get paused():Boolean {
+			return _paused;
 		}
 		
 		public function addBody(b:Body):Boolean {
