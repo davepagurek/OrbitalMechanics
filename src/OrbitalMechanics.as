@@ -14,8 +14,10 @@ package
 		public var bodies:Vector.<Body> = new Vector.<Body>();
 		public const G:Number = 100;
 		public var trails:Boolean = false;
+		public var elastic:Boolean = true;
 		private var temp:Vector.<Body> = new Vector.<Body>();
 		private var _paused:Boolean = false;
+	
 		
 		public function OrbitalMechanics() {
 			addEventListener(Event.ENTER_FRAME, calculate);
@@ -69,31 +71,55 @@ package
 					//If two bodies have collided
 					if (Math.sqrt(Math.pow(bodies[i].x-bodies[j].x,2) + Math.pow(bodies[i].y-bodies[j].y,2))<=bodies[i].radius+bodies[j].radius) {
 						
-						//Find resultant vector assuming perfectly inelastic collisions
-						var _x:Number = (bodies[i].mass*bodies[i].velocity.x() + bodies[j].mass*bodies[j].velocity.x())/(bodies[i].mass + bodies[j].mass);
-						var _y:Number = (bodies[i].mass*bodies[i].velocity.y() + bodies[j].mass*bodies[j].velocity.y())/(bodies[i].mass + bodies[j].mass);
-						var _angle:Number = Geovector.atan(_x, _y);
-						var _velocity:Geovector = new Geovector(Math.sqrt(Math.pow(_x,2)+Math.pow(_y,2)), _angle);
-						
-						//Create new body
-						var b:Body = new Body((bodies[i].x+bodies[j].x)/2, (bodies[i].y+bodies[j].y)/2, bodies[i].mass+bodies[j].mass, _velocity);
-						var bi:Body = bodies[i];
-						var bj:Body = bodies[j];
-						
-						removeBody(bi);
-						removeBody(bj);
-						
-						//If trails are on, keep the original Bodies around until their trails run out
-						if (trails) {
-							temp.push(bi, bj);
+						//Perform inelastic collision
+						if (!elastic) {
+							
+							//Find resultant vector assuming perfectly inelastic collisions
+							var _x:Number = (bodies[i].mass*bodies[i].velocity.x() + bodies[j].mass*bodies[j].velocity.x())/(bodies[i].mass + bodies[j].mass);
+							var _y:Number = (bodies[i].mass*bodies[i].velocity.y() + bodies[j].mass*bodies[j].velocity.y())/(bodies[i].mass + bodies[j].mass);
+							var _angle:Number = Geovector.atan(_x, _y);
+							var _velocity:Geovector = new Geovector(Math.sqrt(Math.pow(_x,2)+Math.pow(_y,2)), _angle);
+							
+							//Create new body
+							var b:Body = new Body((bodies[i].x+bodies[j].x)/2, (bodies[i].y+bodies[j].y)/2, bodies[i].mass+bodies[j].mass, _velocity);
+							var bi:Body = bodies[i];
+							var bj:Body = bodies[j];
+							
+							removeBody(bi);
+							removeBody(bj);
+							
+							//If trails are on, keep the original Bodies around until their trails run out
+							if (trails) {
+								temp.push(bi, bj);
+							}
+							
+							addBody(b);
+							if (i!=0) i--;
+							if (j != 0) j--;
+							
+						//Perform elastic collision
+						} else {
+							var v1x:Number = (bodies[i].velocity.x() - bodies[j].velocity.x()) * ((bodies[i].mass - bodies[j].mass) / (bodies[i].mass + bodies[j].mass)) + bodies[j].velocity.x();
+							var v1y:Number = (bodies[i].velocity.y() - bodies[j].velocity.y()) * ((bodies[i].mass - bodies[j].mass) / (bodies[i].mass + bodies[j].mass)) + bodies[j].velocity.y();
+							
+							var v2x:Number = (2 * bodies[i].mass * (bodies[i].velocity.x() - bodies[j].velocity.x())) / (bodies[i].mass + bodies[j].mass) + bodies[j].velocity.x();
+							var v2y:Number = (2 * bodies[i].mass * (bodies[i].velocity.y() - bodies[j].velocity.y())) / (bodies[i].mass + bodies[j].mass) + bodies[j].velocity.y();
+							
+							bodies[i].velocity.setComponents(v1x, v1y);
+							bodies[j].velocity.setComponents(v2x, v2y);
+							
+							//Move them away until they are no longer touching
+							while (Math.sqrt(Math.pow(bodies[i].x-bodies[j].x,2) + Math.pow(bodies[i].y-bodies[j].y,2))<=bodies[i].radius+bodies[j].radius) {
+								bodies[i].x+=bodies[i].velocity.x();
+								bodies[i].y += bodies[i].velocity.y();
+								bodies[j].x+=bodies[j].velocity.x();
+								bodies[j].y+=bodies[j].velocity.y();
+							}
 						}
-						
-						addBody(b);
-						if (i!=0) i--;
-						if (j != 0) j--;
 						
 					//Otherwise, calculate forces and update vectors
 					} else {
+						
 						//Update vectors
 						var force:Number = (G*bodies[i].mass*bodies[j].mass)/Math.abs(Math.pow(bodies[j].x-bodies[i].x,2) + Math.pow(bodies[j].y-bodies[i].y,2));
 						var angle:Number = Geovector.atan((bodies[j].x-bodies[i].x), (bodies[j].y-bodies[i].y));
